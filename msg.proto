@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package coozer;
+
+message Request {
+    enum Verb {
+        NIL     = 0; // Place holder because the first enum value must be zero in proto3
+        GET     = 1;
+        SET     = 2;
+        DEL     = 3;
+        REV     = 5;
+        WAIT    = 6;
+        NOP     = 7;
+        WALK    = 9;
+        GETDIR  = 14;
+        STAT    = 16;
+        SELF    = 20;
+        ACCESS  = 99;        
+    }
+
+    int32 tag = 1;
+    Verb verb = 2;
+    
+    string path = 4;
+    bytes value = 5;
+    int32 other_tag = 6;
+
+    int32 offset = 7;
+
+    int64 rev = 9;
+}
+
+message Response {
+    enum Err {
+        NIL = 0; // Place holder because the first enum value must be zero in proto3
+        OTHER           = 127;
+        TAG_IN_USE      = 1;
+        UNKNOWN_VERB    = 2;
+        READONLY        = 3;
+        TOO_LATE        = 4;
+        REV_MISMATCH    = 5;
+        BAD_PATH        = 6;
+        MISSING_ARG     = 7;
+        RANGE           = 8;
+        NOTDIR          = 20;
+        ISDIR           = 21;
+        NOENT           = 22;
+    }
+    int32 tag = 1;
+    int32 flags = 2;
+    
+    int64 rev = 3; // Revision
+    string path = 5;
+    bytes value = 6;
+    int32 len = 8;
+
+    Err err_code = 100;
+    string err_detail = 101;
+}
